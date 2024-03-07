@@ -61,7 +61,5 @@ void main() {
     float dif = GetLight(p);
     col = vec3(dif);
 
-    col = pow(col, vec3(0.4545));
-
     fragColor = vec4(col, 1.0);
 }
