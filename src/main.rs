@@ -16,7 +16,6 @@ fn main() {
     program.set();
 
     let verticles: Vec<f32> = vec![-0.5, -0.5, 0.5, -0.5, 0.5, 0.5];
-
     let indices: Vec<u32> = vec![0, 1, 2];
 
     let vbo = VBO::gen();
@@ -38,12 +37,6 @@ fn main() {
         unsafe {
             gl::ClearColor(0.0, 0.0, 0.0, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
-            gl::DrawElements(
-                gl::TRIANGLES,
-                indices.len() as i32,
-                gl::UNSIGNED_INT,
-                0 as *const _,
-            );
         }
         winsdl.window.gl_swap_window()
     }
