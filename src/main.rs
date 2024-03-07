@@ -15,8 +15,10 @@ fn main() {
     let program = create_program().unwrap();
     program.set();
 
-    let verticles: Vec<f32> = vec![-0.5, -0.5, 0.5, -0.5, 0.5, 0.5];
-    let indices: Vec<u32> = vec![0, 1, 2];
+    let verticles: Vec<f32> = vec![
+        -1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0,
+    ];
+    let indices: Vec<u32> = vec![0, 1, 2, 3, 4, 5];
 
     let vbo = VBO::gen();
     vbo.set(&verticles);

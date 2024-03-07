@@ -140,7 +140,7 @@ impl VBO {
                 gl::ARRAY_BUFFER,
                 (verticles.len() * std::mem::size_of::<f32>()) as gl::types::GLsizeiptr,
                 verticles.as_ptr() as *const gl::types::GLvoid,
-                gl::STATIC_DRAW,
+                gl::DYNAMIC_DRAW,
             )
         }
     }
@@ -195,7 +195,7 @@ impl IBO {
                 gl::ELEMENT_ARRAY_BUFFER,
                 (verticles.len() * std::mem::size_of::<u32>()) as gl::types::GLsizeiptr,
                 verticles.as_ptr() as *const gl::types::GLvoid,
-                gl::STATIC_DRAW,
+                gl::DYNAMIC_DRAW,
             )
         }
     }
