@@ -17,6 +17,8 @@ fn main() {
     let program = create_program().unwrap();
     program.set();
 
+    let mut time: f32 = 0.0;
+
     let mut angle_y: f32 = 0.0;
     let mut angle_x: f32 = 0.0;
 
@@ -27,6 +29,7 @@ fn main() {
     let angle_y_name = CString::new("angleY").unwrap();
     let camera_position_name = CString::new("cameraPosition").unwrap();
     let resolution_name = CString::new("resolution").unwrap();
+    let time_name = CString::new("time").unwrap();
 
     let verticles: Vec<f32> = vec![
         -1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0,
@@ -43,6 +46,7 @@ fn main() {
     ibo.set(&indices);
 
     'running: loop {
+        time += 0.01;
         for event in winsdl.event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } => break 'running,
@@ -95,6 +99,8 @@ fn main() {
             let angle_y_uniform_location =
                 gl::GetUniformLocation(program.id(), angle_y_name.as_ptr());
             gl::Uniform1f(angle_y_uniform_location, angle_y);
+            let time_uniform_location = gl::GetUniformLocation(program.id(), time_name.as_ptr());
+            gl::Uniform1f(time_uniform_location, time);
         }
         unsafe {
             gl::ClearColor(0.0, 0.0, 0.0, 1.0);

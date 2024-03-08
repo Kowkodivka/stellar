@@ -10,6 +10,7 @@ uniform vec3 cameraPosition;
 uniform vec2 resolution;
 uniform float angleX;
 uniform float angleY;
+uniform float time;
 
 float GetDist(vec3 p) {
     vec4 s = vec4(0.0, 1.0, 6.0, 1.0);
@@ -42,7 +43,7 @@ vec3 GetNormal(vec3 p) {
 }
 
 float GetLight(vec3 p) {
-    vec3 lightPos = vec3(5.0, 5.0, 6.0);
+    vec3 lightPos = vec3(5.0 * sin(time), 5.0, 6.0 +5.0 * cos(time));
     vec3 l = normalize(lightPos - p);
     vec3 n = GetNormal(p);
     
