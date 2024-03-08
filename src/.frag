@@ -42,7 +42,7 @@ vec3 GetNormal(vec3 p) {
 }
 
 float GetLight(vec3 p) {
-    vec3 lightPos = vec3(0.0, 5.0, 6.0);
+    vec3 lightPos = vec3(5.0, 5.0, 6.0);
     vec3 l = normalize(lightPos - p);
     vec3 n = GetNormal(p);
     
@@ -62,17 +62,17 @@ void main() {
 
     mat3 rotateX = mat3(
         1.0, 0.0, 0.0,
-        0.0, cos(angleX), -sin(angleX),
-        0.0, sin(angleX), cos(angleX)
+        0.0, cos(angleY), -sin(angleY),
+        0.0, sin(angleY), cos(angleY)
     );
     
     mat3 rotateY = mat3(
-        cos(angleY), 0.0, sin(angleY),
+        cos(angleX), 0.0, sin(angleX),
         0.0, 1.0, 0.0,
-        -sin(angleY), 0.0, cos(angleY)
+        -sin(angleX), 0.0, cos(angleX)
     );
     
-    rd = normalize(rotateX * rotateY * rd);
+    rd = normalize(rotateY * rotateX * rd);
 
     float d = RayMarch(ro, rd);
     vec3 p = ro + rd * d;

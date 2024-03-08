@@ -17,8 +17,8 @@ fn main() {
     let program = create_program().unwrap();
     program.set();
 
-    let mut angle_y: f32 = PI / 2.0;
-    let mut angle_x: f32 = PI / 2.0;
+    let mut angle_y: f32 = 0.0;
+    let mut angle_x: f32 = 0.0;
 
     let mut camera_position = vec![0.0, 1.0, 0.0];
     let resolution = vec![800.0, 600.0];
@@ -51,26 +51,26 @@ fn main() {
                     ..
                 } => match keycode {
                     Keycode::W => {
-                        camera_position[0] += angle_y.sin() * angle_x.cos();
-                        camera_position[1] -= angle_y.cos();
-                        camera_position[2] += angle_y.sin() * angle_x.sin();
+                        camera_position[0] -= angle_x.sin() * 0.5;
+                        camera_position[1] += angle_y.sin() * 0.5;
+                        camera_position[2] += angle_x.cos() * 0.5;
                     }
                     Keycode::S => {
-                        camera_position[0] -= angle_y.sin() * angle_x.cos();
-                        camera_position[1] += angle_y.cos();
-                        camera_position[2] -= angle_y.sin() * angle_x.sin();
+                        camera_position[0] += angle_x.sin() * 0.5;
+                        camera_position[1] -= angle_y.sin() * 0.5;
+                        camera_position[2] -= angle_x.cos() * 0.5;
                     }
                     Keycode::Left => {
-                        angle_x += 1.0;
+                        angle_x += 0.1;
                     }
                     Keycode::Right => {
-                        angle_x -= 1.0;
+                        angle_x -= 0.1;
                     }
                     Keycode::Up => {
-                        angle_y += 1.0;
+                        angle_y += 0.1;
                     }
                     Keycode::Down => {
-                        angle_y -= 1.0;
+                        angle_y -= 0.1;
                     }
                     _ => {}
                 },
