@@ -13,7 +13,7 @@ uniform float angleY;
 uniform float time;
 
 float GetDist(vec3 p) {
-    vec4 s = vec4(0.0, 1.0, 6.0, 1.0);
+    vec4 s = vec4(0.0, 1.0, 5.0, 1.0);
     float sphereDist = length(p - s.xyz) - s.w;
     float planeDist = p.y;
     float d = min(sphereDist, planeDist);
@@ -43,7 +43,7 @@ vec3 GetNormal(vec3 p) {
 }
 
 float GetLight(vec3 p) {
-    vec3 lightPos = vec3(5.0 * sin(time), 5.0, 6.0 +5.0 * cos(time));
+    vec3 lightPos = vec3(5.0 * sin(time), 5.0, 6.0 + 5.0 * cos(time));
     vec3 l = normalize(lightPos - p);
     vec3 n = GetNormal(p);
     
@@ -59,7 +59,7 @@ void main() {
 
     vec2 uv = (gl_FragCoord.xy - 0.5 * vec2(resolution.x, resolution.y)) / resolution.y;
     vec3 ro = cameraPosition;
-    vec3 rd = normalize(vec3(uv.x, uv.y, 1.0));
+    vec3 rd = normalize(vec3(uv.x, uv.y, 2.0));
 
     mat3 rotateX = mat3(
         1.0, 0.0, 0.0,
