@@ -1,5 +1,7 @@
+use std::{f32::consts::PI, ffi::CString};
+
 use object::{create_program, IBO, VAO, VBO};
-use sdl2::event::Event;
+use sdl2::{event::Event, keyboard::Keycode};
 
 use crate::winsdl::Winsdl;
 
@@ -14,6 +16,17 @@ fn main() {
 
     let program = create_program().unwrap();
     program.set();
+
+    let mut angle_y: f32 = PI / 2.0;
+    let mut angle_x: f32 = PI / 2.0;
+
+    let mut camera_position = vec![0.0, 1.0, 0.0];
+    let resolution = vec![800.0, 600.0];
+
+    let angle_x_name = CString::new("angleX").unwrap();
+    let angle_y_name = CString::new("angleY").unwrap();
+    let camera_position_name = CString::new("cameraPosition").unwrap();
+    let resolution_name = CString::new("resolution").unwrap();
 
     let verticles: Vec<f32> = vec![
         -1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0,
@@ -33,8 +46,55 @@ fn main() {
         for event in winsdl.event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } => break 'running,
+                Event::KeyDown {
+                    keycode: Some(keycode),
+                    ..
+                } => match keycode {
+                    Keycode::W => {
+                        camera_position[0] += angle_y.sin() * angle_x.cos();
+                        camera_position[1] -= angle_y.cos();
+                        camera_position[2] += angle_y.sin() * angle_x.sin();
+                    }
+                    Keycode::S => {
+                        camera_position[0] -= angle_y.sin() * angle_x.cos();
+                        camera_position[1] += angle_y.cos();
+                        camera_position[2] -= angle_y.sin() * angle_x.sin();
+                    }
+                    Keycode::Left => {
+                        angle_x += 1.0;
+                    }
+                    Keycode::Right => {
+                        angle_x -= 1.0;
+                    }
+                    Keycode::Up => {
+                        angle_y += 1.0;
+                    }
+                    Keycode::Down => {
+                        angle_y -= 1.0;
+                    }
+                    _ => {}
+                },
                 _ => {}
             }
+        }
+        unsafe {
+            let camera_uniform_location =
+                gl::GetUniformLocation(program.id(), camera_position_name.as_ptr());
+            gl::Uniform3f(
+                camera_uniform_location,
+                camera_position[0],
+                camera_position[1],
+                camera_position[2],
+            );
+            let resolution_uniform_location =
+                gl::GetUniformLocation(program.id(), resolution_name.as_ptr());
+            gl::Uniform2f(resolution_uniform_location, resolution[0], resolution[1]);
+            let angle_x_uniform_location =
+                gl::GetUniformLocation(program.id(), angle_x_name.as_ptr());
+            gl::Uniform1f(angle_x_uniform_location, angle_x);
+            let angle_y_uniform_location =
+                gl::GetUniformLocation(program.id(), angle_y_name.as_ptr());
+            gl::Uniform1f(angle_y_uniform_location, angle_y);
         }
         unsafe {
             gl::ClearColor(0.0, 0.0, 0.0, 1.0);

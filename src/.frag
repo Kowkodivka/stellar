@@ -6,6 +6,11 @@
 
 out vec4 fragColor;
 
+uniform vec3 cameraPosition;
+uniform vec2 resolution;
+uniform float angleX;
+uniform float angleY;
+
 float GetDist(vec3 p) {
     vec4 s = vec4(0.0, 1.0, 6.0, 1.0);
     float sphereDist = length(p - s.xyz) - s.w;
@@ -51,9 +56,23 @@ float GetLight(vec3 p) {
 void main() {
     vec3 col = vec3(0.0);
 
-    vec2 uv = (gl_FragCoord.xy - 0.5 * vec2(800, 600)) / 600;
-    vec3 ro = vec3(0.0, 1.0, 0.0);
+    vec2 uv = (gl_FragCoord.xy - 0.5 * vec2(resolution.x, resolution.y)) / resolution.y;
+    vec3 ro = cameraPosition;
     vec3 rd = normalize(vec3(uv.x, uv.y, 1.0));
+
+    mat3 rotateX = mat3(
+        1.0, 0.0, 0.0,
+        0.0, cos(angleX), -sin(angleX),
+        0.0, sin(angleX), cos(angleX)
+    );
+    
+    mat3 rotateY = mat3(
+        cos(angleY), 0.0, sin(angleY),
+        0.0, 1.0, 0.0,
+        -sin(angleY), 0.0, cos(angleY)
+    );
+    
+    rd = normalize(rotateX * rotateY * rd);
 
     float d = RayMarch(ro, rd);
     vec3 p = ro + rd * d;

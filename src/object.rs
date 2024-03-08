@@ -103,6 +103,10 @@ impl Program {
         Ok(Program { id })
     }
 
+    pub fn id(&self) -> GLuint {
+        self.id
+    }
+
     pub fn set(&self) {
         unsafe { gl::UseProgram(self.id) }
     }
