@@ -1,4 +1,4 @@
-use std::{f32::consts::PI, ffi::CString};
+use std::ffi::CString;
 
 use object::{create_program, IBO, VAO, VBO};
 use sdl2::{event::Event, keyboard::Keycode};
@@ -9,9 +9,16 @@ mod object;
 mod winsdl;
 
 fn main() {
-    let mut winsdl = Winsdl::new("Window", 800, 600).unwrap();
+    let resolution = vec![1080.0, 720.0];
+
+    let mut winsdl = Winsdl::new(
+        "Raymarching",
+        resolution[0] as usize,
+        resolution[1] as usize,
+    )
+    .unwrap();
     unsafe {
-        gl::Viewport(0, 0, 800, 600);
+        gl::Viewport(0, 0, resolution[0] as i32, resolution[1] as i32);
     }
 
     let program = create_program().unwrap();
@@ -19,11 +26,10 @@ fn main() {
 
     let mut time: f32 = 0.0;
 
-    let mut angle_y: f32 = 0.0;
+    let mut angle_y: f32 = -0.35;
     let mut angle_x: f32 = 0.0;
 
-    let mut camera_position = vec![0.0, 1.0, 0.0];
-    let resolution = vec![800.0, 600.0];
+    let mut camera_position = vec![0.0, 14.0, -30.0];
 
     let angle_x_name = CString::new("angleX").unwrap();
     let angle_y_name = CString::new("angleY").unwrap();
@@ -64,17 +70,25 @@ fn main() {
                         camera_position[1] -= angle_y.sin() * 0.5;
                         camera_position[2] -= angle_x.cos() * 0.5;
                     }
+                    Keycode::A => {
+                        camera_position[0] -= angle_x.cos() * 0.5;
+                        camera_position[2] -= angle_x.sin() * 0.5;
+                    }
+                    Keycode::D => {
+                        camera_position[0] += angle_x.cos() * 0.5;
+                        camera_position[2] += angle_x.sin() * 0.5;
+                    }
                     Keycode::Left => {
-                        angle_x += 0.1;
+                        angle_x += 0.05;
                     }
                     Keycode::Right => {
-                        angle_x -= 0.1;
+                        angle_x -= 0.05;
                     }
                     Keycode::Up => {
-                        angle_y += 0.1;
+                        angle_y += 0.05;
                     }
                     Keycode::Down => {
-                        angle_y -= 0.1;
+                        angle_y -= 0.05;
                     }
                     _ => {}
                 },
@@ -82,25 +96,29 @@ fn main() {
             }
         }
         unsafe {
-            let camera_uniform_location =
-                gl::GetUniformLocation(program.id(), camera_position_name.as_ptr());
             gl::Uniform3f(
-                camera_uniform_location,
+                gl::GetUniformLocation(program.id(), camera_position_name.as_ptr()),
                 camera_position[0],
                 camera_position[1],
                 camera_position[2],
             );
-            let resolution_uniform_location =
-                gl::GetUniformLocation(program.id(), resolution_name.as_ptr());
-            gl::Uniform2f(resolution_uniform_location, resolution[0], resolution[1]);
-            let angle_x_uniform_location =
-                gl::GetUniformLocation(program.id(), angle_x_name.as_ptr());
-            gl::Uniform1f(angle_x_uniform_location, angle_x);
-            let angle_y_uniform_location =
-                gl::GetUniformLocation(program.id(), angle_y_name.as_ptr());
-            gl::Uniform1f(angle_y_uniform_location, angle_y);
-            let time_uniform_location = gl::GetUniformLocation(program.id(), time_name.as_ptr());
-            gl::Uniform1f(time_uniform_location, time);
+            gl::Uniform2f(
+                gl::GetUniformLocation(program.id(), resolution_name.as_ptr()),
+                resolution[0],
+                resolution[1],
+            );
+            gl::Uniform1f(
+                gl::GetUniformLocation(program.id(), angle_x_name.as_ptr()),
+                angle_x,
+            );
+            gl::Uniform1f(
+                gl::GetUniformLocation(program.id(), angle_y_name.as_ptr()),
+                angle_y,
+            );
+            gl::Uniform1f(
+                gl::GetUniformLocation(program.id(), time_name.as_ptr()),
+                time,
+            );
         }
         unsafe {
             gl::ClearColor(0.0, 0.0, 0.0, 1.0);

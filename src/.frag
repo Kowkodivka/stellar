@@ -12,11 +12,25 @@ uniform float angleX;
 uniform float angleY;
 uniform float time;
 
+float sdTorus(vec3 p, vec2 r) {
+    float x = length(p.xz) - r.x;
+    return length(vec2(x, p.y)) - r.y;
+}
+
+float dBox(vec3 p, vec3 s) {
+    return length(max(abs(p) - s, 0.0));
+}
+
 float GetDist(vec3 p) {
     vec4 s = vec4(0.0, 1.0, 5.0, 1.0);
-    float sphereDist = length(p - s.xyz) - s.w;
+
     float planeDist = p.y;
-    float d = min(sphereDist, planeDist);
+    float sphereDist = length(p - s.xyz) - s.w;
+    float boxDist = dBox(p - vec3(10.0, 1.0, 5.0), vec3(1.0, 1.0, 1.0));
+    float torusDist = sdTorus(p - vec3(-10.0, 1.0, 6.0), vec2(1.5, 0.5));
+
+    float d = min(min(sphereDist, min(boxDist, torusDist)), planeDist);
+
     return d;
 }
 
@@ -59,7 +73,7 @@ void main() {
 
     vec2 uv = (gl_FragCoord.xy - 0.5 * vec2(resolution.x, resolution.y)) / resolution.y;
     vec3 ro = cameraPosition;
-    vec3 rd = normalize(vec3(uv.x, uv.y, 2.0));
+    vec3 rd = normalize(vec3(uv.x, uv.y, 1.0));
 
     mat3 rotateX = mat3(
         1.0, 0.0, 0.0,

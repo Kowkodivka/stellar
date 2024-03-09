@@ -44,10 +44,6 @@ impl Shader {
 
         Ok(Shader { id })
     }
-
-    pub fn id(&self) -> GLuint {
-        self.id
-    }
 }
 
 impl Drop for Shader {
